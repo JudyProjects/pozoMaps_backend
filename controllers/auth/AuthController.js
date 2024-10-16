@@ -6,7 +6,7 @@ var bcrypt = require('bcryptjs');
 const path = require('path');
 var User = require('../../models/User.model');
 var VerifyToken = require('./VerifyToken');
-const funciones = require('../../resources/js/funciones.js');
+const funciones = require('../../funciones');
 router.use(bodyParser.urlencoded({ extended: false }));
 router.use(bodyParser.json());
 
@@ -40,11 +40,11 @@ router.post('/login', async function (req, res) {
 });
 
 router.get('/login', function (req, res) {
-	/* var token = req.cookies.token;
+	var token = req.cookies.token;
 	if (token) {
 		return res.status(200).redirect('/api/auth/lobby');
-	} */
-	return res.status(200).sendFile(path.join(__dirname, '../../views/login.html'));
+	}
+	//return res.status(200).sendFile(path.join(__dirname, '../../views/login.html'));
 });
 
 router.get('/lobby', VerifyToken, function (req, res) {
