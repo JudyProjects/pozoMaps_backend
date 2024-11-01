@@ -16,15 +16,8 @@ router.post('/register', async function (req, res) {
 		if (existingUser) {
 			return res.status(400).send("El usuario ya existe.");
 		}
-
-		// Crear nuevo usuario si no existe
-		var hashedPassword = bcrypt.hashSync(req.body.password, 8);
-		const user = await User.create({
-			name: req.body.name,
-			email: req.body.email,
-			password: hashedPassword
-		});
-
+		const user = await funciones.crearUsuario(req.body.name, req.body.email, req.body.password);
+		
 		// Generar y guardar el token en las cookies
 		var token = jwt.sign({ id: user._id }, process.env.secret, {
 			expiresIn: 86400 // expira en 24 horas
