@@ -7,6 +7,7 @@ const path = require('path');
 var User = require('../../models/User.model');
 var VerifyToken = require('./VerifyToken');
 const funciones = require('../../funciones');
+const verifyToken = require('./VerifyToken');
 router.use(bodyParser.urlencoded({ extended: false }));
 router.use(bodyParser.json());
 
@@ -47,10 +48,40 @@ router.post('/login', async function (req, res) {
 	res.status(200).send({ auth: true });
 });
 
-router.get('/me2', VerifyToken, async function (req, res, next) {
-	const user = await User.findById(req.userId, { password: 0 }); // projection
-	if (!user) return res.status(404).send("No existe el usuario.");
-	res.status(200).send(user);
+router.get('/me', VerifyToken, async function (req, res){
+	try {
+        const user = await User.findById(req.userId, { password: 0 }); // Excluye la contraseña
+        if (!user) return res.status(404).send("Usuario no encontrado.");
+
+        res.status(200).send({ name: user.name });
+    } catch (error) {
+        res.status(500).send("Hubo un problema obteniendo la información del usuario.");
+    }
+});
+
+router.post('/logout', (req, res) => {
+    res.clearCookie('token', { sameSite: 'none', secure: true });
+    res.status(200).send({ message: 'Cierre de sesión exitoso' });
+});
+
+router.get('/perfil', verifyToken, async (req, res) => {
+	try {
+        const user = await User.findById(req.userId, { password: 0 }); // Excluye la contraseña
+        if (!user) return res.status(404).send("Usuario no encontrado.");
+
+        res.status(200).send(user);
+    } catch (error) {
+        res.status(500).send("Hubo un problema obteniendo la información del usuario.");
+    }
+});
+
+router.put('/perfil', verifyToken, async (req, res) => {
+	try {
+        const updatedUser = await User.findByIdAndUpdate(req.userId, req.body, { new: true });
+        res.status(200).send(updatedUser);
+    } catch (error) {
+        res.status(500).send("Hubo un problema actualizando el perfil.");
+    }
 });
 
 module.exports = router;
