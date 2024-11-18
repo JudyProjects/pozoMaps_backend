@@ -43,19 +43,19 @@ async function findExistingRoute(waypoints) {
 }
 
 async function crearRuta(name, waypoints) {
-    // Buscar una ruta existente
-    const existingRoute = await findExistingRoute(waypoints);
-    
-    if (existingRoute) {
-        return existingRoute;
-    }
+	// Buscar una ruta existente
+	const existingRoute = await findExistingRoute(waypoints);
 
-    // Si no existe, crear una nueva ruta
-    const route = new Route({
-        name: name,
-        waypoints: waypoints,
-    });
-    return await route.save();
+	if (existingRoute) {
+		return existingRoute;
+	}
+
+	// Si no existe, crear una nueva ruta
+	const route = new Route({
+		name: name,
+		waypoints: waypoints,
+	});
+	return await route.save();
 }
 
 async function addMarkerToRoute(routeId, markerData) {
@@ -64,7 +64,7 @@ async function addMarkerToRoute(routeId, markerData) {
 		position: markerData.position,
 		traceDistance: markerData.traceDistance,
 		traceColor: markerData.traceColor,
-		metadata: markerData.metadata,
+		comentario: markerData.comentario,
 	});
 
 	await marker.save();
@@ -85,7 +85,7 @@ async function getRouteWithMarkers(routeId) {
 	return route;
 }
 
-async function saveMarkerToDB(latlng, routeId, distance, color) {
+async function saveMarkerToDB(latlng, routeId, distance, color, comentario) {
 	const markerData = {
 		position: {
 			lat: latlng.lat,
@@ -93,11 +93,7 @@ async function saveMarkerToDB(latlng, routeId, distance, color) {
 		},
 		traceDistance: distance,
 		traceColor: color,
-		metadata: {
-			type: "warning",
-			severity: "medium",
-			description: "Punto de control",
-		},
+		comentario: comentario,
 	};
 
 	const savedMarker = await addMarkerToRoute(routeId, markerData);
@@ -109,15 +105,15 @@ async function updateMarker(
 	position,
 	traceDistance,
 	traceColor,
-	metadata
+	comentario
 ) {
 	const updatedMarker = await RouteMarker.findByIdAndUpdate(
-		req.params.markerId,
+		markerId,
 		{
-			position: req.body.position,
-			traceDistance: req.body.traceDistance,
-			traceColor: req.body.traceColor,
-			metadata: req.body.metadata,
+			position: position,
+			traceDistance: traceDistance,
+			traceColor: traceColor,
+			comentario: comentario,
 		},
 		{ new: true }
 	);
@@ -126,8 +122,8 @@ async function updateMarker(
 }
 
 async function deleteMarker(markerId) {
-    await RouteMarker.findByIdAndDelete(markerId);
-    return;
+	await RouteMarker.findByIdAndDelete(markerId);
+	return;
 }
 
 module.exports = {
@@ -138,5 +134,5 @@ module.exports = {
 	saveMarkerToDB,
 	getRouteMarkers,
 	updateMarker,
-    deleteMarker,
+	deleteMarker,
 };

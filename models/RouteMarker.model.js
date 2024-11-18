@@ -30,19 +30,9 @@ const routeMarkerSchema = new mongoose.Schema({
         default: 'yellow',
         required: true
     },
-    metadata: {
-        description: String,
-        type: {
-            type: String,
-            enum: ['warning', 'danger', 'info'],
-            default: 'warning'
-        },
-        severity: {
-            type: String,
-            enum: ['low', 'medium', 'high'],
-            default: 'medium'
-        },
-        tags: [String]
+    comentario: {
+        type: String,
+        default: ''
     },
     active: {
         type: Boolean,

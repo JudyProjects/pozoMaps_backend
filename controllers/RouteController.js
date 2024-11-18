@@ -28,7 +28,7 @@ router.post('/markers', async (req, res) => {
             position: req.body.position,
             traceDistance: req.body.traceDistance,
             traceColor: req.body.traceColor,
-            metadata: req.body.metadata
+            comentario: req.body.comentario
         });
         res.status(201).json(marker);
     } catch (error) {
@@ -54,7 +54,7 @@ router.put('/markers/:markerId', async (req, res) => {
             req.body.position,
             req.body.traceDistance,
             req.body.traceColor,
-            req.body.metadata
+            req.body.comentario
         );
         res.json(updatedMarker);
     } catch (error) {
