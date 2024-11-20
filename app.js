@@ -22,6 +22,8 @@ app.get('/', function (req, res) {
 var AuthController = require('./controllers/auth/AuthController.js');
 app.use('/api/auth', AuthController);
 
+var RouteController = require('./controllers/RouteController.js');
+app.use('/api/routes', RouteController);
 
 module.exports = { server, express };
 var socket = require('./socket.js');
